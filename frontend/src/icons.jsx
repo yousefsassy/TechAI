@@ -1,0 +1,12 @@
+import React from 'react';
+const icon = children => ({ size = 20, strokeWidth = 1.8 }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{children}</svg>;
+export const ArrowUp = icon(<><path d="M12 19V5M5 12l7-7 7 7"/></>);
+export const Plus = icon(<path d="M12 5v14M5 12h14"/>);
+export const ShoppingBag = icon(<><path d="M4 8h16l-1 13H5L4 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></>);
+export const Menu = icon(<path d="M4 6h16M4 12h16M4 18h16"/>);
+export const X = icon(<path d="M5 5l14 14M19 5 5 19"/>);
+export const ExternalLink = icon(<><path d="M11 5H5v14h14v-6M13 5h6v6M19 5l-9 9"/></>);
+export const Trash2 = icon(<><path d="M4 7h16M10 4h4M6 7l1 14h10l1-14M10 11v6M14 11v6"/></>);
+export const Sparkles = icon(<><path d="m12 2 1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8L12 2ZM19 16l.7 2.3L22 19l-2.3.7L19 22l-.7-2.3L16 19l2.3-.7L19 16Z"/></>);
+export const ChevronRight = icon(<path d="m9 5 7 7-7 7"/>);
+export const Clock3 = icon(<><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></>);

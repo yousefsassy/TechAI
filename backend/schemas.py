@@ -61,7 +61,7 @@ class StructuredInput(StrictModel):
 class OfferOutput(StrictModel):
     id: int
     name: str
-    category: Literal['laptop','desktop','tablet']
+    category: str = Field(min_length=1, max_length=100)
     brand: str | None
     model: str | None
     processor: str | None
@@ -78,6 +78,32 @@ class OfferOutput(StrictModel):
     image_url: str | None
     scraped_at: str
     is_demo: bool
+    description: str = ''
+    specifications: dict = Field(default_factory=dict)
+    graphics: str | None = None
+    rating: str | float | None = None
+    rating_count: str | int | None = None
+
+class ShoppingChatInput(StrictModel):
+    turn_id: str | None = Field(default=None, min_length=1, max_length=80, pattern=r'^[A-Za-z0-9_-]+$')
+    message: str = Field(min_length=1, max_length=2000)
+    conversation_id: str | None = None
+    language: Literal['en','fr','ar'] = 'en'
+
+class CartUpdateInput(StrictModel):
+    offer_id: int = Field(gt=0)
+    quantity: int = Field(ge=0, le=100)
+
+class RegisterInput(StrictModel):
+    email: EmailStr
+    password: str = Field(min_length=12, max_length=128)
+
+class LoginInput(RegisterInput):
+    pass
+
+class MfaInput(StrictModel):
+    challenge: str = Field(min_length=32, max_length=128)
+    code: str = Field(min_length=6, max_length=32)
 
 class ComparisonOutput(OfferOutput):
     total_tnd: str

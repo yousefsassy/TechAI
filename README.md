@@ -1,5 +1,55 @@
 # TechStock AI
 
+## React shopping assistant
+
+Use the **EN / FR / عربي** switch in the header or on the sign-in screen. It changes the interface and the language of new assistant replies; Arabic uses a right-to-left layout. Shopping queries and cart commands accept English, French and Arabic, including Arabic-Indic numerals in budgets. Previous messages keep the language in which they were originally sent. The selected language is saved in the browser.
+
+### Account and authenticator setup
+
+For a personal Gmail address, run `python scripts/configure_gmail.py` from the project root. Enter your Gmail address and a Google **app password** when prompted; the password entry is hidden and the script updates the ignored `.env` without printing it or altering your OpenAI key. It configures one sender; users can register with other email addresses. Restart FastAPI afterward. Gmail requires Google 2-Step Verification before you can create an app password: [Google's app password instructions](https://support.google.com/accounts/answer/185833). The script configures `smtp.gmail.com` on port 587 with STARTTLS. The Gmail server/port are already prepared in `.env`; `EMAIL_MODE` stays in sandbox until you complete the interactive setup.
+
+**Email codes are the default:** account creation and login send a six-digit code to your registered address. Codes expire after five minutes and work once; five failed attempts temporarily lock the account. Actual delivery requires your own SMTP account configured locally in `.env`:
+
+```ini
+EMAIL_MODE=real
+SMTP_HOST=smtp.your-provider.example
+SMTP_PORT=587
+SMTP_USER=your-sender-address
+SMTP_PASSWORD=your-provider-app-password
+SMTP_FROM=your-sender-address
+SMTP_ALLOWED_RECIPIENTS=your-login-address
+```
+
+Replace the sample values with your provider's real settings. Port 587 uses STARTTLS; port 465 uses implicit TLS. Restart FastAPI after editing `.env`. The existing `EMAIL_MODE=sandbox` and local SMTP settings capture messages for tests; they **do not send messages to your real inbox**. The backend returns a clear configuration error in that mode. Keep passwords and codes out of chat and Git. The OpenAI key does not send email.
+
+The **Use an authenticator app instead** link keeps the earlier manual-key TOTP flow available. Existing authenticator accounts can also choose email codes once SMTP is configured. A single Gmail sender can email login codes to different user addresses. `SMTP_ALLOWED_RECIPIENTS` still restricts the original sandbox purchase-order emails, not shopping login codes. Both sign-in methods use the same shopping account.
+
+The React shopping UI requires a local account with a password (at least 12 characters) and a time-based authenticator code. On first visit, select **Create an account**. Add the displayed setup key in Google Authenticator, Microsoft Authenticator, or another TOTP app using **Enter setup key / time based**, then enter its 6-digit code. Save the eight recovery codes shown once. Future sign-ins require your password and a new authenticator code; a recovery code can replace the authenticator code once if you lose your device. **Sign out** revokes the current session. Sessions expire after 24 hours and are stored only in browser tab session storage.
+
+Password hashes use scrypt, authenticator secrets are encrypted with a generated key in `data/*.auth.key`, and recovery codes are stored as hashes. Preserve the encryption key file together with the SQLite database when moving or backing up the project; losing the key makes authenticator secrets unreadable. The original academic procurement endpoints still use their separate anonymous browser sessions and are not covered by this shopping login. This is a localhost demo; no password reset by email is provided.
+
+The new React interface is in `frontend/`. It replaces the shopping-facing selection UI with conversation, saved catalog cards and a session-scoped cart; the original Streamlit procurement, approvals, orders and monitoring remain available for the academic workflow. From the repository root, start the existing API with `python scripts/run.py` (Python 3.11 and the pinned requirements installed). In another terminal:
+
+```sh
+cd frontend
+npm install
+npm run dev
+```
+
+Open **http://127.0.0.1:5173**. Set `LLM_PROVIDER=openrouter` and add your [OpenRouter API key](https://openrouter.ai/settings/keys) as `OPENROUTER_API_KEY` in the backend `.env`. The client requests `openrouter/free` and only sends that provider its own key. Restart the API after changing credentials. Free service availability and rate limits vary. With no model connection, literal shopping searches and basic comparisons still work. Open-ended answers require a model connection.
+
+The assistant reads the conversation’s recent messages, active filters and last displayed cards. Common constrained searches, named comparisons and simple refinements run locally. Other requests use a single model decision to choose a general answer, card comparison or shopping search. Budget refinements keep the product in focus. A topic change starts a separate search within the same conversation.
+
+Shopping searches first check SQLite. A recent match can answer immediately. A cache miss, an explicit live check, or missing retailer coverage for a price comparison can trigger parallel lookups at Spacenet and Scoop. It reads public category navigation and robots-advertised sitemaps, follows matching product links, verifies retailer metadata, and caches the observations. The collector limits pages and elapsed time per retailer. Repeated identical requests share a short SQLite cooldown. Product URLs are restricted to supported hosts. The crawler obeys robots rules and pauses on access or rate-limit responses. The app can return a partial result or an empty search when coverage is limited. No price or stock is inferred from sitemap URLs.
+
+Cards group matching retailer offers before the result limit. Each comparison table includes prices in TND, differences from the lowest eligible offer, retailer links, stock and observation times. A card checked for this request is marked individually. General questions leave the last product set available for subsequent comparisons and cart commands. GPU comparisons use listed model tiers, which are estimates. The daily scheduled collection still runs alongside on-demand discovery. Use `SHOPPING_LIVE_DISCOVERY=false` for cache-only operation and `CATALOG_AUTO_REFRESH=false` to disable the separate scheduled job. The maximum age for recommendations is set by `CATALOG_MAX_AGE_HOURS` (48 by default). The authenticated `GET /shopping/catalog-status` endpoint reports the scheduled job’s status. Optional LangSmith traces cover tool selection, catalog search and retailer discovery.
+
+See the [shopping architecture, Toprix investigation and performance measurements](docs/conversational-comparison.md).
+
+With Docker, `docker compose up --build` exposes React on **http://127.0.0.1:5173**, the original Streamlit app on port 8501, and the API on port 8000. Run `python -m pytest tests/test_shopping.py -q` to verify conversation context, cart updates and session isolation.
+
+Run `python -m eval.shopping_eval` after collecting real offers to audit category, brand and budget precision on three example queries; empty catalog scenarios report no score. This is a constraint check, not proof of model recommendation quality. Implementation inspiration: [Playwright's Python browser guide](https://playwright.dev/python/docs/pages) and a [Playwright e-commerce pagination walkthrough](https://www.youtube.com/watch?v=L9hXsdLe2V0); code is adapted to the existing Scrapling scraper and its source policies.
+
 Intelligent IT procurement for Tunisia, built for CS496 Project 3 - The Operator.
 Streamlit -> FastAPI -> LangGraph -> official MCP Python SDK -> SQLite.
 Scrapling runs independently and collects retailer offers. Orders are internal sandbox records; no retailer checkout or payment exists.
@@ -88,6 +138,7 @@ Review the best recommendation and alternatives, select a product and quantity, 
 ## Verified source policy
 
 - **Spacenet:** public terms and robots inspected; normal HTTP access and structured metadata verified. Ten-second minimum crawl interval, no login or bypass. Category pagination and individual product pages are followed.
+- **Scoop:** public robots file currently permits category/product pages and marks search indexing as allowed. The collector checks robots again before each run, obeys access blocks and follows pagination. Live extraction from the user's network still needs validation.
 - **Mytek:** robots fetched; its category request returned HTTP 403. No bypass attempted. `--retailer mytek` can check normal access later and stops on blocks. Product parsing remains unverified against live Mytek product HTML.
 - **Tunisianet:** public terms Article 9 prohibit reproduction of the catalog. Bulk collection is disabled. The command reports this limitation; obtain retailer permission before changing the policy.
 - No fabricated products are inserted to meet a collection target. `data/scrape-*.json` contains run statistics, and `eval/catalog-verification.json` contains delivery-time database counts when available.
@@ -145,7 +196,7 @@ Budgets cover merchandise in the internal sandbox order. Shipping is not quoted 
 
 See `.env.example`. Key options:
 
-- OPENAI_API_KEY / OPENAI_MODEL: live extraction; no model fallback impersonation.
+- Select OpenRouter with `LLM_PROVIDER=openrouter` and `OPENROUTER_API_KEY`. For an existing OpenAI integration, select `LLM_PROVIDER=openai` and configure `OPENAI_API_KEY` and `OPENAI_MODEL`.
 - LANGSMITH_API_KEY / LANGSMITH_TRACING / LANGSMITH_PROJECT: optional tracing. Disabled tracing does not affect execution.
 - DATABASE_URL: SQLite only. Development defaults to `data/techstock.db`; tests/evaluation use `test.db`/`evaluation.db`. Checkpoint files are derived from each database path.
 - OFFER_MAX_AGE_HOURS: default 48.

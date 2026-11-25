@@ -5,6 +5,7 @@
 
 # Python
 .venv/
+.venv12/
 venv/
 __pycache__/
 *.py[cod]
@@ -62,3 +63,4 @@ htmlcov/
 *.egg-info/
 build/
 dist/
+frontend/node_modules/

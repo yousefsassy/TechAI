@@ -1,0 +1,493 @@
+{
+  "inventory": [
+    [
+      "g305",
+      "discovered",
+      "Logitech",
+      "Souris Gamer Logitech G305 sans fil",
+      "99",
+      {}
+    ],
+    [
+      "g502",
+      "discovered",
+      "Logitech",
+      "Souris Gamer Logitech G502 filaire",
+      "400",
+      {}
+    ],
+    [
+      "viper",
+      "discovered",
+      "Razer",
+      "Souris Gamer Razer Viper",
+      "180",
+      {}
+    ],
+    [
+      "usb-mouse",
+      "accessories",
+      null,
+      "Souris Optique USB",
+      "20",
+      {}
+    ],
+    [
+      "keyboard-and-mouse",
+      "accessories",
+      null,
+      "Clavier + Souris Gamer",
+      "10",
+      {}
+    ],
+    [
+      "mouse-pad-bundle",
+      "accessories",
+      null,
+      "Souris Gamer avec tapis",
+      "12",
+      {}
+    ],
+    [
+      "stale-mouse",
+      "discovered",
+      "Logitech",
+      "Souris Gamer Logitech G305",
+      "12",
+      {
+        "stale": true
+      }
+    ],
+    [
+      "keyboard-rgb",
+      "keyboard",
+      "Redragon",
+      "Clavier Gamer Redragon RGB",
+      "145",
+      {}
+    ],
+    [
+      "keyboard-no-rgb",
+      "keyboard",
+      "Logitech",
+      "Clavier Logitech K120 sans RGB",
+      "80",
+      {}
+    ],
+    [
+      "keyboard-unknown",
+      "keyboard",
+      "Acer",
+      "Clavier Acer AK50",
+      "50",
+      {}
+    ],
+    [
+      "keyboard-exact",
+      "keyboard",
+      "MSI",
+      "Clavier MSI Gamer RGB",
+      "400",
+      {}
+    ],
+    [
+      "headset-wireless",
+      "headset",
+      "Logitech",
+      "Casque Bluetooth Logitech H800",
+      "180",
+      {}
+    ],
+    [
+      "headset-wired",
+      "headset",
+      "Logitech",
+      "Casque Logitech H390 filaire",
+      "70",
+      {}
+    ],
+    [
+      "headset-lookalike",
+      "headset",
+      "JBL",
+      "Casque JBL compatible avec Logitech",
+      "20",
+      {}
+    ],
+    [
+      "headset-unknown",
+      "headset",
+      "Logitech",
+      "Casque Bluetooth Logitech G435",
+      "55",
+      {
+        "availability": "unknown"
+      }
+    ],
+    [
+      "airpods-pro-2",
+      "earphones",
+      "Apple",
+      "Apple AirPods Pro 2",
+      "430",
+      {}
+    ],
+    [
+      "airpods-pro",
+      "earphones",
+      "Apple",
+      "Apple AirPods Pro",
+      "495",
+      {}
+    ],
+    [
+      "airpods-3",
+      "earphones",
+      "Apple",
+      "Apple AirPods 3",
+      "300",
+      {}
+    ],
+    [
+      "earphones-lookalike",
+      "earphones",
+      "JBL",
+      "Écouteurs JBL pour Apple AirPods",
+      "25",
+      {}
+    ],
+    [
+      "ipad",
+      "tablet",
+      "Apple",
+      "Apple iPad 11 Wi-Fi 128 Go",
+      "1600",
+      {}
+    ],
+    [
+      "ipad-case",
+      "tablet",
+      "Apple",
+      "Coque pour Apple iPad 11",
+      "30",
+      {}
+    ],
+    [
+      "samsung-tablet",
+      "tablet",
+      "Samsung",
+      "Tablette Samsung Galaxy Tab A11",
+      "469",
+      {}
+    ],
+    [
+      "laptop-study",
+      "laptop",
+      "Acer",
+      "Acer Swift Laptop Intel Iris Xe",
+      "1900",
+      {
+        "ram_gb": 8,
+        "storage_gb": 256
+      }
+    ],
+    [
+      "laptop-dev",
+      "laptop",
+      "Lenovo",
+      "PC Portable Lenovo ThinkPad T14 AMD Ryzen 7",
+      "2500",
+      {
+        "ram_gb": 16,
+        "storage_gb": 512,
+        "raw": {
+          "attributes": {
+            "GPU": "Graphique intégrée Radeon"
+          }
+        }
+      }
+    ],
+    [
+      "laptop-gaming",
+      "laptop",
+      "MSI",
+      "MSI Katana PC Portable Gamer RTX 4060Ti",
+      "3190",
+      {
+        "ram_gb": 16,
+        "storage_gb": 1024
+      }
+    ],
+    [
+      "laptop-unknown",
+      "laptop",
+      "Lenovo",
+      "PC Portable Lenovo IdeaPad",
+      "2000",
+      {}
+    ]
+  ],
+  "queries": [
+    {
+      "case": "gaming-mouse-strict",
+      "messages": {
+        "en": "Gaming mice under 400 TND",
+        "fr": "Souris gamer à moins de 400 TND",
+        "ar": "ماوس العاب تحت ٤٠٠ دينار"
+      },
+      "grades": {
+        "g305": 2,
+        "viper": 2
+      }
+    },
+    {
+      "case": "gaming-mouse-inclusive",
+      "messages": {
+        "en": "Gaming mice up to 400 TND",
+        "fr": "Souris gamer jusqu’à 400 TND",
+        "ar": "ماوس العاب حتى ٤٠٠ دينار"
+      },
+      "grades": {
+        "g305": 2,
+        "viper": 2,
+        "g502": 2
+      }
+    },
+    {
+      "case": "generic-mouse",
+      "messages": {
+        "en": "Show me mice",
+        "fr": "Montre-moi des souris",
+        "ar": "اعرض لي ماوس"
+      },
+      "grades": {
+        "g305": 1,
+        "g502": 1,
+        "viper": 1,
+        "usb-mouse": 1
+      }
+    },
+    {
+      "case": "logitech-mouse",
+      "messages": {
+        "en": "Show me a Logitech mouse",
+        "fr": "Montre-moi une souris Logitech",
+        "ar": "اعرض لي ماوس لوجيتك"
+      },
+      "grades": {
+        "g305": 2,
+        "g502": 2
+      }
+    },
+    {
+      "case": "logitech-exact",
+      "messages": {
+        "en": "Logitech G305 mouse",
+        "fr": "Souris Logitech G305",
+        "ar": "ماوس Logitech G305"
+      },
+      "grades": {
+        "g305": 3
+      }
+    },
+    {
+      "case": "headset-category",
+      "messages": {
+        "en": "Show me headsets",
+        "fr": "Montre-moi des casques",
+        "ar": "اعرض لي سماعات رأس"
+      },
+      "grades": {
+        "headset-wired": 1,
+        "headset-wireless": 1,
+        "headset-lookalike": 1
+      }
+    },
+    {
+      "case": "headset-brand",
+      "messages": {
+        "en": "Logitech headsets",
+        "fr": "Casques Logitech",
+        "ar": "سماعات رأس لوجيتك"
+      },
+      "grades": {
+        "headset-wired": 2,
+        "headset-wireless": 2
+      }
+    },
+    {
+      "case": "headset-bluetooth",
+      "messages": {
+        "en": "Logitech Bluetooth headset",
+        "fr": "Casque Logitech Bluetooth",
+        "ar": "سماعة رأس Logitech Bluetooth"
+      },
+      "grades": {
+        "headset-wireless": 3
+      }
+    },
+    {
+      "case": "headset-model",
+      "messages": {
+        "en": "Logitech H390 headset",
+        "fr": "Casque Logitech H390",
+        "ar": "سماعة رأس Logitech H390"
+      },
+      "grades": {
+        "headset-wired": 3
+      }
+    },
+    {
+      "case": "rgb-keyboard-strict",
+      "messages": {
+        "en": "RGB keyboards under 400 TND",
+        "fr": "Claviers RGB à moins de 400 TND",
+        "ar": "لوحة مفاتيح RGB تحت ٤٠٠ دينار"
+      },
+      "grades": {
+        "keyboard-rgb": 2
+      }
+    },
+    {
+      "case": "non-rgb-keyboard",
+      "messages": {
+        "en": "Keyboards without RGB",
+        "fr": "Claviers sans RGB",
+        "ar": "لوحة مفاتيح بدون RGB"
+      },
+      "grades": {
+        "keyboard-no-rgb": 2
+      }
+    },
+    {
+      "case": "apple-tablet",
+      "messages": {
+        "en": "Show me iPads",
+        "fr": "Montre-moi des iPads",
+        "ar": "اعرض لي ايباد"
+      },
+      "grades": {
+        "ipad": 2
+      }
+    },
+    {
+      "case": "samsung-tablet",
+      "messages": {
+        "en": "Show me Samsung tablets",
+        "fr": "Montre-moi des tablettes Samsung",
+        "ar": "اعرض لي تابلت سامسونج"
+      },
+      "grades": {
+        "samsung-tablet": 2
+      }
+    },
+    {
+      "case": "airpods-family",
+      "messages": {
+        "en": "Apple AirPods",
+        "fr": "AirPods Apple",
+        "ar": "سماعات آبل ايربودز"
+      },
+      "grades": {
+        "airpods-3": 2,
+        "airpods-pro": 2,
+        "airpods-pro-2": 2
+      }
+    },
+    {
+      "case": "airpods-model",
+      "messages": {
+        "en": "AirPods Pro 2 under 500 TND",
+        "fr": "AirPods Pro 2 sous 500 TND",
+        "ar": "ايربودز برو ٢ تحت ٥٠٠ دينار"
+      },
+      "grades": {
+        "airpods-pro-2": 3
+      }
+    },
+    {
+      "case": "programming",
+      "messages": {
+        "en": "Laptop for programming",
+        "fr": "PC portable pour la programmation",
+        "ar": "لابتوب للبرمجة"
+      },
+      "grades": {
+        "laptop-dev": 3,
+        "laptop-gaming": 3,
+        "laptop-study": 1,
+        "laptop-unknown": 1
+      }
+    },
+    {
+      "case": "non-dedicated-gpu",
+      "messages": {
+        "en": "Laptop without a dedicated GPU",
+        "fr": "PC portable sans carte graphique dédiée",
+        "ar": "لابتوب بدون بطاقة رسوميات"
+      },
+      "grades": {
+        "laptop-study": 2,
+        "laptop-dev": 2
+      }
+    },
+    {
+      "case": "grouped-budget",
+      "messages": {
+        "en": "Laptops up to 2,500 TND",
+        "fr": "PC portable jusqu’à 2 500 TND",
+        "ar": "لابتوب حتى ٢٬٥٠٠ دينار"
+      },
+      "grades": {
+        "laptop-dev": 1,
+        "laptop-study": 1,
+        "laptop-unknown": 1
+      }
+    },
+    {
+      "case": "refined-budget",
+      "messages": {
+        "en": "Under 150 TND",
+        "fr": "Sous 150 TND",
+        "ar": "تحت ١٥٠ دينار"
+      },
+      "grades": {
+        "headset-wired": 2
+      },
+      "context": {
+        "en": "Logitech headsets",
+        "fr": "Casques Logitech",
+        "ar": "سماعات رأس لوجيتك"
+      }
+    },
+    {
+      "case": "unavailable-product",
+      "messages": {
+        "en": "Logitech headset under 25 TND",
+        "fr": "Casque Logitech sous 25 TND",
+        "ar": "سماعة رأس لوجيتك تحت ٢٥ دينار"
+      },
+      "grades": {}
+    },
+    {
+      "case": "foreign-currency",
+      "messages": {
+        "en": "Laptop under USD 500",
+        "fr": "PC portable sous 500 euros",
+        "ar": "لابتوب تحت ٥٠٠ دولار"
+      },
+      "grades": {},
+      "clarify": true
+    },
+    {
+      "case": "ambiguous-currency",
+      "messages": {
+        "en": "Laptop under 2,5,00 TND",
+        "fr": "PC portable sous 2,5,00 TND",
+        "ar": "لابتوب تحت ٢ ٥ ٠٠ دينار"
+      },
+      "grades": {},
+      "clarify": true
+    }
+  ]
+}

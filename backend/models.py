@@ -44,6 +44,13 @@ class Offer(Timestamps, Base):
     is_demo: Mapped[bool] = mapped_column(default=False)
     product: Mapped[Product] = relationship(back_populates='offers')
 
+class CatalogRefresh(Base):
+    __tablename__ = 'catalog_refresh'
+    id: Mapped[str] = mapped_column(primary_key=True)
+    last_completed_at: Mapped[datetime | None]
+    lease_until: Mapped[datetime | None]
+    last_error: Mapped[str | None]
+
 class Proposal(Timestamps, Base):
     __tablename__ = 'purchase_proposals'
     id: Mapped[str] = mapped_column(primary_key=True)
@@ -120,3 +127,109 @@ class ShoppingSelection(Timestamps, Base):
     selected_quantity: Mapped[int | None]
     selected_at: Mapped[datetime | None]
     expires_at: Mapped[datetime]
+
+class ShoppingConversation(Timestamps, Base):
+    __tablename__ = 'shopping_conversations'
+    id: Mapped[str] = mapped_column(primary_key=True)
+    user_session_id: Mapped[str] = mapped_column(index=True)
+    title: Mapped[str]
+    criteria: Mapped[dict] = mapped_column(JSON, default=dict)
+    last_offer_ids: Mapped[list] = mapped_column(JSON, default=list)
+    messages: Mapped[list['ShoppingMessage']] = relationship(back_populates='conversation', cascade='all, delete-orphan')
+
+class ShoppingMessage(Base):
+    __tablename__ = 'shopping_messages'
+    id: Mapped[int] = mapped_column(primary_key=True)
+    conversation_id: Mapped[str] = mapped_column(ForeignKey('shopping_conversations.id'), index=True)
+    role: Mapped[str]
+    content: Mapped[str]
+    products: Mapped[list] = mapped_column(JSON, default=list)
+    created_at: Mapped[datetime] = mapped_column(default=now)
+    conversation: Mapped[ShoppingConversation] = relationship(back_populates='messages')
+
+
+class ShoppingTurn(Base):
+    __tablename__ = 'shopping_turns'
+    owner_id: Mapped[str] = mapped_column(primary_key=True)
+    turn_id: Mapped[str] = mapped_column(primary_key=True)
+    request_hash: Mapped[str] = mapped_column(String(64))
+    conversation_id: Mapped[str] = mapped_column(ForeignKey('shopping_conversations.id'))
+    assistant_message_id: Mapped[int] = mapped_column(ForeignKey('shopping_messages.id'))
+    result: Mapped[dict] = mapped_column(JSON)
+
+
+class CartItem(Timestamps, Base):
+    __tablename__ = 'shopping_cart_items'
+    __table_args__ = (UniqueConstraint('user_session_id', 'offer_id'),)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_session_id: Mapped[str] = mapped_column(index=True)
+    offer_id: Mapped[int] = mapped_column(ForeignKey('supplier_offers.id'))
+    quantity: Mapped[int]
+    offer: Mapped[Offer] = relationship()
+
+class ShoppingUser(Timestamps, Base):
+    __tablename__ = 'shopping_users'
+    id: Mapped[str] = mapped_column(primary_key=True)
+    email: Mapped[str] = mapped_column(unique=True, index=True)
+    password_hash: Mapped[str]
+    totp_secret_encrypted: Mapped[str]
+    mfa_enabled: Mapped[bool] = mapped_column(default=False)
+    last_totp_counter: Mapped[int] = mapped_column(default=-1)
+    recovery_hashes: Mapped[list] = mapped_column(JSON, default=list)
+    failed_attempts: Mapped[int] = mapped_column(default=0)
+    locked_until: Mapped[datetime | None]
+
+class ShoppingAuthChallenge(Base):
+    __tablename__ = 'shopping_auth_challenges'
+    token_hash: Mapped[str] = mapped_column(primary_key=True)
+    user_id: Mapped[str] = mapped_column(ForeignKey('shopping_users.id'), index=True)
+    purpose: Mapped[str]
+    expires_at: Mapped[datetime]
+    attempts: Mapped[int] = mapped_column(default=0)
+
+class ShoppingAuthSession(Base):
+    __tablename__ = 'shopping_auth_sessions'
+    token_hash: Mapped[str] = mapped_column(primary_key=True)
+    user_id: Mapped[str] = mapped_column(ForeignKey('shopping_users.id'), index=True)
+    expires_at: Mapped[datetime]
+
+class ShoppingEmailChallenge(Base):
+    __tablename__ = 'shopping_email_challenges'
+    token_hash: Mapped[str] = mapped_column(primary_key=True)
+    user_id: Mapped[str] = mapped_column(ForeignKey('shopping_users.id'), index=True)
+    code_hash: Mapped[str]
+    expires_at: Mapped[datetime]
+    attempts: Mapped[int] = mapped_column(default=0)
+
+
+class RetailerClock(Base):
+    __tablename__ = 'retailer_request_clocks'
+    host: Mapped[str] = mapped_column(primary_key=True)
+    next_request: Mapped[float] = mapped_column(default=0.0)
+    paused_until: Mapped[float] = mapped_column(default=0.0)
+    active_until: Mapped[float] = mapped_column(default=0.0, server_default='0')
+    owner_token: Mapped[str | None]
+    transport_failures: Mapped[int] = mapped_column(default=0, server_default='0')
+
+
+class DiscoveryIndex(Base):
+    __tablename__ = 'retailer_discovery_indexes'
+    url: Mapped[str] = mapped_column(primary_key=True)
+    entries: Mapped[list] = mapped_column(JSON)
+    is_index: Mapped[bool]
+    collected_at: Mapped[datetime] = mapped_column(default=now)
+
+
+class ShoppingLookup(Base):
+    __tablename__ = 'shopping_lookup_leases'
+    signature: Mapped[str] = mapped_column(primary_key=True)
+    retry_at: Mapped[datetime]
+
+
+class DiscoveryOperation(Base):
+    __tablename__ = 'retailer_discovery_operations'
+    signature: Mapped[str] = mapped_column(primary_key=True)
+    token: Mapped[str]
+    expires_at: Mapped[datetime] = mapped_column(index=True)
+    completed_at: Mapped[datetime | None]
+    reports: Mapped[list | None] = mapped_column(JSON)

@@ -28,6 +28,16 @@ services:
     depends_on:
       backend:
         condition: service_healthy
+  shopping:
+    build:
+      context: ./frontend
+    environment:
+      API_PROXY_TARGET: http://backend:8000
+    ports:
+      - "127.0.0.1:5173:5173"
+    depends_on:
+      backend:
+        condition: service_healthy
   mailpit:
     image: axllent/mailpit:v1.27
     ports:

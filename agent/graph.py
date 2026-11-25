@@ -1,7 +1,7 @@
 import asyncio, time
 from langgraph.graph import StateGraph, START, END
 from langgraph.types import interrupt
-from langchain_openai import ChatOpenAI
+from backend.services.llm import chat_model
 from backend.config import settings
 from backend.schemas import Requirements
 from backend.services.selection import prepare_selection, trusted_choice, selected_proposal
@@ -11,9 +11,8 @@ from agent.prompts import EXTRACT
 from mcp_server.client import invoke
 
 async def parse_openai(message):
-    if not settings.openai_api_key: raise ValueError('openai_key_missing')
-    model=ChatOpenAI(model=settings.openai_model,api_key=settings.openai_api_key,timeout=30,max_retries=0)
-    result=await model.with_structured_output(Requirements,include_raw=True).ainvoke([
+    model=chat_model(timeout=30)
+    result=await model.with_structured_output(Requirements,include_raw=True,method='function_calling').ainvoke([
         ('system',EXTRACT),('human',message)])
     if result['parsed'] is None: raise ValueError('request_extraction_failed')
     usage=result['raw'].usage_metadata or {}
